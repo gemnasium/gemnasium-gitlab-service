@@ -16,7 +16,7 @@ Gem::Specification.new do |gem|
   gem.executables   = gem.files.grep(%r{^bin/}) { |f| File.basename(f) }
   gem.version       = Gemnasium::GitlabService::VERSION
 
-  gem.add_runtime_dependency "gitlab_git", '~>5.5'
+  gem.add_runtime_dependency "gitlab_git", '~>5.0'
 
   gem.add_development_dependency 'rake', '~>10.0'
   gem.add_development_dependency 'rspec', '~>2.14'
