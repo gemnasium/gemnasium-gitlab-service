@@ -1,3 +1,4 @@
+require 'gemnasium/gitlab_service/version'
 require 'net/https'
 
 module Gemnasium
