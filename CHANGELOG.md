@@ -4,6 +4,8 @@
 
 # 0.2.0 / 2014-02-21
 
+**Yanked**
+
 * Replace gitlab_git with rugged
 * Do a full repo scan to match all use cases
 
