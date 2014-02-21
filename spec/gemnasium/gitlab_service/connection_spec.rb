@@ -17,7 +17,7 @@ describe Gemnasium::GitlabService::Connection do
 
     it 'issues a GET request' do
       expect(WebMock).to have_requested(:get, api_url('test_path'))
-                .with(:headers => {'Accept'=>'application/json', 'Content-Type'=>'application/json'})
+        .with(:headers => {'Accept'=>'application/json', 'Content-Type'=>'application/json', 'User-Agent' => "Gemnasium Gitlab Service - v#{Gemnasium::GitlabService::VERSION}"})
     end
   end
 
@@ -26,7 +26,7 @@ describe Gemnasium::GitlabService::Connection do
 
     it 'issues a POST request' do
       expect(WebMock).to have_requested(:post, api_url('test_path'))
-                .with(:body => {"foo"=>"bar"}, :headers => {'Accept'=>'application/json', 'Content-Type'=>'application/json'})
+        .with(:body => {"foo"=>"bar"}, :headers => {'Accept'=>'application/json', 'Content-Type'=>'application/json', 'User-Agent' => "Gemnasium Gitlab Service - v#{Gemnasium::GitlabService::VERSION}"})
     end
   end
 
