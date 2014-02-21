@@ -1,3 +1,7 @@
+# 0.2.1 / 2014-02-21
+
+* Fix require
+
 # 0.2.0 / 2014-02-21
 
 * Replace gitlab_git with rugged
