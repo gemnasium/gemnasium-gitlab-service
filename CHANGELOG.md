@@ -1,3 +1,7 @@
+# 0.2.2 / 2014-04-28
+
+* Fix encoding errors
+
 # 0.2.1 / 2014-02-21
 
 * Fix require
