@@ -38,7 +38,7 @@ module Gemnasium
         files.inject([]) do |a, file|
           if files_to_upload.include? file.first
             blob = repo.lookup file.last
-            a.push({"filename" => file.first, "sha" => blob.oid, "content" => blob.content})
+            a.push({"filename" => file.first, "sha" => blob.oid, "content" => blob.text})
           end
           a
         end
