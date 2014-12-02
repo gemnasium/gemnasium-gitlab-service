@@ -4,21 +4,21 @@ require 'net/https'
 module Gemnasium
   module GitlabService
     class Connection
-      DEFAULT_ENDPOINT = 'gemnasium.com'
-      DEFAULT_API_VERSION = 'v3'
+      DEFAULT_ENDPOINT = 'api.gemnasium.com'
+      DEFAULT_API_VERSION = 'v1'
       DEFAULT_SSL = true
       DEFAULT_AGENT = "Gemnasium Gitlab Service - v#{Gemnasium::GitlabService::VERSION}"
 
       def initialize(options = {})
-        use_ssl = options[:use_ssl] || DEFAULT_SSL
-        host = options[:host] || DEFAULT_ENDPOINT
-        port = options[:port] || (use_ssl ? 443 : 80)
+        use_ssl = options.fetch(:use_ssl){ DEFAULT_SSL }
+        host = options.fetch(:host){ DEFAULT_ENDPOINT }
+        port = options.fetch(:port){ use_ssl ? 443 : 80 }
+        api_version = options.fetch(:api_version){ DEFAULT_API_VERSION }.to_s
 
         @connection = Net::HTTP.new(host, port)
         @connection.use_ssl = use_ssl
-        # @connection.set_debug_output($stdout)
-        @api_key = options[:api_key]
-        @base_url = "/api/" + (options[:api_version] || DEFAULT_API_VERSION).to_s + "/"
+        @api_key = options.fetch(:api_key)
+        @base_url = "/#{ api_version }/"
       end
 
       def post(path, body, headers = {})

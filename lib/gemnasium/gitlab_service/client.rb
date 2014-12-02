@@ -9,49 +9,34 @@ module Gemnasium
         @connection = Gemnasium::GitlabService::Connection.new(options)
       end
 
-      # Compares SHA1s with remote versions & returns the diff
-      #
-      # @params project [String] Identifier of the project
-      #         branch [String] Identifier of the branch
-      #         files [Hash] files to be uploaded. Eg:
-      #           {
-      #             "filename"  : "file_sha",
-      #             ...
-      #           }
-      def compare_sha1s(project, branch, sha1s)
-        request(:post, "projects/#{project}/branches/#{branch}/dependency_files/compare", sha1s)
-      end
-
       # Updates or creates the dependency files.
       #
       # @params project [String] Identifier of the project
-      #         branch [String] Identifier of the branch
-      #         files [Hash] files to be uploaded. Eg:
-      #           [
-      #             {
-      #               "filename"  : "dependency_filename",
-      #               "sha"       : "new_sha",
-      #               "content"   : "new_content"
-      #             },
-      #             ...
-      #           ]
-      def upload_files(project, branch, files)
-        request(:post, "projects/#{project}/branches/#{branch}/dependency_files/upload", files)
+      #         files [Hash] files to upload; a file respond to :path, :sha and :content
+
+      def upload_files(project, commit_sha, files)
+        payload = files.map do |f|
+          { "path" => f.path, "sha" => f.sha, "content" => Base64.encode64(f.content) }
+        end
+        extra_headers = { 'X-Gms-Revision' => commit_sha }
+        request(:post, "projects/#{ project }/dependency_files", payload, extra_headers)
       end
 
-    private
+      private
 
       # Issue a HTTP request
       #
       # @params method [String] Method of the request
       #         path [String] Path of the request
-      #         parameters [Hash] Parameters to send a POST request
-      def request(method, path, parameters = {})
+      #         payload [Hash] payload of a POST request
+      #         extra_headers [Hash] extra HTTP headers
+      #
+      def request(method, path, payload = {}, extra_headers = {})
         case method
         when :get
           response = @connection.get(path)
         when :post
-          response = @connection.post(path, JSON.generate(parameters))
+          response = @connection.post(path, JSON.generate(payload), extra_headers)
         end
 
         raise Gemnasium::GitlabService::InvalidApiKeyError if response.code.to_i == 401
