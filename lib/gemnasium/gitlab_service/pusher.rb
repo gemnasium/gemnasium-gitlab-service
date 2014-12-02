@@ -57,22 +57,27 @@ module Gemnasium
       # Convert a commit entry for the Gemnasium client
       #
       def convert_entry(entry)
-        path, oid = entry.last.values_at(:name, :oid)
-        blob = repo.lookup oid
+        path = path_for_entry entry
+        blob = repo.lookup entry.last[:oid]
         DependencyFile.new path, blob.oid, blob.text
       end
 
       # Tell whether or not a commit entry is a supported dependency file
       #
       def is_entry_supported?(entry)
-        path = entry.last[:name]
-        path.match supported_path_regexp
+        path_for_entry(entry).match supported_path_regexp
+      end
+
+      # Extract file path from a git entry
+      #
+      def path_for_entry(entry)
+        entry[0..-2].join('/') + entry.last[:name]
       end
 
       # Return regexp that matches the path of a supported dependency file
       #
       def supported_path_regexp
-        /(Gemfile|Gemfile\.lock|.*\.gemspec|package\.json|npm-shrinkwrap\.json|setup\.py|requirements\.txt|requires\.txt|composer\.json|composer\.lock)$/
+        /(Gemfile|Gemfile\.lock|.*\.gemspec|package\.json|npm-shrinkwrap\.json|setup\.py|requires\.txt|requirements\.txt|requirements\.pip|requirements.*\.txt|composer\.json|composer\.lock|bower\.json)$/
       end
 
     end

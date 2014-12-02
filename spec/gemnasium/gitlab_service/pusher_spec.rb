@@ -10,7 +10,7 @@ describe Gemnasium::GitlabService::Pusher do
   let(:options) do
     {
       repo: repo_path,
-      after: '8c003bc9baa9d443dd2cf7fb8bc551439bb99295',
+      after: '9da08d77df2a30a5b578aaa482cce11bf6d4297c',
       ref: 'refs/heads/devel',
       token: 'gemnasium-user/the-project',
       client: client
@@ -22,14 +22,14 @@ describe Gemnasium::GitlabService::Pusher do
   describe "#call" do
     it "pushes the dependency files" do
       expect(client).to receive(:upload_files).with(
-        'gemnasium-user/the-project', '8c003bc9baa9d443dd2cf7fb8bc551439bb99295', [
-          described_class::DependencyFile.new('Gemfile', "68609d16b77711fd079668539a07a648fe837c84", <<-EOS),
+        'gemnasium-user/the-project', '9da08d77df2a30a5b578aaa482cce11bf6d4297c', [
+          described_class::DependencyFile.new('depfiles/Gemfile', "68609d16b77711fd079668539a07a648fe837c84", <<-EOS),
 source 'https://rubygems.org'
 gem 'jasmine'
 gem 'juicer'
 gem 'json'
             EOS
-          described_class::DependencyFile.new('Gemfile.lock', "c6d0eedc76b94d6412a9ab9741a10782116c1c47", <<-EOS),
+          described_class::DependencyFile.new('depfiles/Gemfile.lock', "c6d0eedc76b94d6412a9ab9741a10782116c1c47", <<-EOS),
 GEM
   remote: https://rubygems.org/
   specs:
