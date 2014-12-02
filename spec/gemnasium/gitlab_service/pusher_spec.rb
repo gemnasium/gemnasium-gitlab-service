@@ -1,17 +1,17 @@
 require 'spec_helper'
+require 'tmpdir'
 
 # Pusher integration test: it relies on Rugged and loads an existing git repo.
 # The client is stubbed (or mocked) and there's no network connection.
 #
 describe Gemnasium::GitlabService::Pusher do
   let(:client) { double('client').stub(:upload_files) }
-  let(:repo_path) { File.expand_path('../../../fixtures/repo', __FILE__) }
 
   let(:options) do
     {
       repo: repo_path,
-      after: '9da08d77df2a30a5b578aaa482cce11bf6d4297c',
-      ref: 'refs/heads/devel',
+      after: commit_sha,
+      ref: 'refs/heads/master',
       token: 'gemnasium-user/the-project',
       client: client
     }
@@ -19,17 +19,17 @@ describe Gemnasium::GitlabService::Pusher do
 
   let(:pusher) { described_class.new(options) }
 
-  describe "#call" do
-    it "pushes the dependency files" do
-      expect(client).to receive(:upload_files).with(
-        'gemnasium-user/the-project', '9da08d77df2a30a5b578aaa482cce11bf6d4297c', [
-          described_class::DependencyFile.new('depfiles/Gemfile', "68609d16b77711fd079668539a07a648fe837c84", <<-EOS),
+  let(:gemfile_content) do
+    <<-EOS
 source 'https://rubygems.org'
 gem 'jasmine'
 gem 'juicer'
 gem 'json'
-            EOS
-          described_class::DependencyFile.new('depfiles/Gemfile.lock', "c6d0eedc76b94d6412a9ab9741a10782116c1c47", <<-EOS),
+    EOS
+  end
+
+  let(:lockfile_content) do
+    <<-EOS
 GEM
   remote: https://rubygems.org/
   specs:
@@ -70,7 +70,46 @@ PLATFORMS
 DEPENDENCIES
   jasmine
   json
-            EOS
+    EOS
+  end
+
+  let(:repo_path) { Dir.mktmpdir }
+
+  let(:commit_sha) do
+    repo = Rugged::Repository.init_at(repo_path)
+    index = repo.index
+
+    repo.write(gemfile_content, :blob).tap do |oid|
+      index.add(path: "depfiles/Gemfile", :oid => oid, :mode => 0100644)
+    end
+
+    repo.write(lockfile_content, :blob).tap do |oid|
+      index.add(path: "depfiles/Gemfile.lock", :oid => oid, :mode => 0100644)
+    end
+
+    options = {}
+    options[:tree] = index.write_tree(repo)
+    options[:author] = { :email => "fcat@github.com", :name => 'Fabien Catteau', :time => Time.now }
+    options[:committer] = { :email => "fcat@github.com", :name => 'Fabien Catteau', :time => Time.now }
+    options[:message] ||= "Add some Ruby dependency files"
+    options[:parents] = []
+    options[:update_ref] = 'HEAD'
+
+    Rugged::Commit.create(repo, options).to_s
+  end
+
+  after do
+    FileUtils.rm_rf repo_path
+  end
+
+  describe "#call" do
+    it "pushes the dependency files" do
+      file_class = described_class::DependencyFile
+
+      expect(client).to receive(:upload_files).with(
+        'gemnasium-user/the-project', commit_sha, [
+          file_class.new('depfiles/Gemfile', "68609d16b77711fd079668539a07a648fe837c84", gemfile_content),
+          file_class.new('depfiles/Gemfile.lock', "c6d0eedc76b94d6412a9ab9741a10782116c1c47", lockfile_content),
         ]
       )
       pusher.call
