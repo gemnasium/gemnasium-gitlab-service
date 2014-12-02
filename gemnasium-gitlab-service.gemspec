@@ -3,11 +3,12 @@ require './lib/gemnasium/gitlab_service/version'
 Gem::Specification.new do |gem|
   gem.authors       = ["Tech-Angels"]
   gem.email         = ["contact@tech-angels.com"]
-  gem.description   = "Add Gemnasium support for Gitlab as a Project Service.
-    It uploads dependency files automatically on https://gemnasium.com API to
-    track your project dependencies."
+  gem.description   = "Add Gemnasium support to Gitlab as a Project Service.
+    It uploads the dependency files to https://api.gemnasium.com
+    whenever a new commit is pushed to your repository."
+
   gem.summary       = "Gemnasium service for Gitlab"
-  gem.homepage      = "https://gemnasium.com/"
+  gem.homepage      = "https://github.com/gemnasium/gemnasium-gitlab-service"
   gem.license       = 'MIT'
   gem.files         = `git ls-files`.split($\)
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
