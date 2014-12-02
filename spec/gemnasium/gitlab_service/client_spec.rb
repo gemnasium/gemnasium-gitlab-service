@@ -13,16 +13,34 @@ describe Gemnasium::GitlabService::Client do
   end
 
   describe 'upload_files' do
-    before do
-      @files = [
-        {"filename" => "filename_1", "sha" => "sha_1","content" => "content_1"},
-        {"filename" => "filename_2", "sha" => "sha_2","content" => "content_2"}
+    let(:files) do
+      [
+        double('Gemfile', path: 'Gemfile', sha: 'sha of Gemfile', content: 'content of Gemfile'),
+        double('Gemfile.lock', path: 'Gemfile.lock', sha: 'sha of Gemfile.lock', content: 'content of Gemfile.lock'),
       ]
-      client.upload_files('project_id', 'branch_id', @files)
     end
+
+    before do
+      client.upload_files('project_slug', files)
+    end
+
     it 'issues a POST request' do
-      expect(WebMock).to have_requested(:post, api_url("projects/project_id/branches/branch_id/dependency_files/upload"))
-        .with(:body => JSON.generate(@files), :headers => {'Accept'=>'application/json', 'Content-Type'=>'application/json'})
+      expected_payload = JSON.generate [
+        {
+          'path' => 'Gemfile',
+          'sha' => 'sha of Gemfile',
+          'content' => "Y29udGVudCBvZiBHZW1maWxl\n",
+        },
+        {
+          'path' => 'Gemfile.lock',
+          'sha' => 'sha of Gemfile.lock',
+          'content' => "Y29udGVudCBvZiBHZW1maWxlLmxvY2s=\n",
+        },
+      ]
+
+      expect(WebMock).to have_requested(:post, api_url("projects/project_slug/dependency_files")).
+        with(:body => expected_payload,
+             :headers => {'Accept'=>'application/json', 'Content-Type'=>'application/json'})
     end
   end
 

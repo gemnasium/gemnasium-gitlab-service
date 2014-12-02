@@ -7,6 +7,9 @@ module Gemnasium
     # Push all dependency files of a git repo to Gemnasium.
     #
     class Pusher
+
+      DependencyFile = Struct.new(:path, :sha, :content)
+
       attr_reader :repo_path, :commit_sha, :branch_name
       attr_reader :project_slug, :client
 
@@ -22,11 +25,11 @@ module Gemnasium
       #
       def call
         if dependency_files.any?
-          client.upload_files(project_slug, branch_name, dependency_files)
+          client.upload_files(project_slug, dependency_files)
         end
       end
 
-      # private # TODO: make following methods private after testing them
+      private
 
       # Return the dependency files as an array
       #
@@ -56,7 +59,7 @@ module Gemnasium
       def convert_entry(entry)
         path, oid = entry.last.values_at(:name, :oid)
         blob = repo.lookup oid
-        { "filename" => path, "sha" => blob.oid, "content" => blob.text }
+        DependencyFile.new path, blob.oid, blob.text
       end
 
       # Tell whether or not a commit entry is a supported dependency file

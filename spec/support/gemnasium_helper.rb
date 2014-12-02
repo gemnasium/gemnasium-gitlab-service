@@ -1,5 +1,5 @@
 def api_url(path)
-  "https://X:secret_api_key@gemnasium.com/api/v3/#{path}"
+  "https://X:secret_api_key@api.gemnasium.com/v1/#{path}"
 end
 
 def stub_requests
@@ -10,14 +10,7 @@ def stub_requests
   }
   response_headers = {'Content-Type'=>'application/json'}
 
-  # Push requests
-  stub_request(:post, api_url("projects/project_id/branches/branch_id/dependency_files/compare"))
-    .with(:headers => request_headers)
-    .to_return(:status => 200,
-      :body => '{ "to_upload": [], "deleted": [] }',
-      :headers => response_headers)
-
-  stub_request(:post, api_url("projects/project_id/branches/branch_id/dependency_files/upload"))
+  stub_request(:post, api_url("projects/project_slug/dependency_files"))
     .with(:headers => request_headers)
     .to_return(:status => 200,
       :body => '{ "added": ["new_gemspec.gemspec"], "updated": ["modified_lockfile.lockfile"], "unchanged": [], "unsupported": [] }',

@@ -12,18 +12,13 @@ module Gemnasium
       # Updates or creates the dependency files.
       #
       # @params project [String] Identifier of the project
-      #         branch [String] Identifier of the branch
-      #         files [Hash] files to be uploaded. Eg:
-      #           [
-      #             {
-      #               "filename"  : "dependency_filename",
-      #               "sha"       : "new_sha",
-      #               "content"   : "new_content"
-      #             },
-      #             ...
-      #           ]
-      def upload_files(project, branch, files)
-        request(:post, "projects/#{project}/branches/#{branch}/dependency_files/upload", files)
+      #         files [Hash] files to upload; a file respond to :path, :sha and :content
+
+      def upload_files(project, files)
+        payload = files.map do |f|
+          { "path" => f.path, "sha" => f.sha, "content" => Base64.encode64(f.content) }
+        end
+        request(:post, "projects/#{ project }/dependency_files", payload)
       end
 
       private
