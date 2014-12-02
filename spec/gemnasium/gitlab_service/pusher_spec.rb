@@ -22,7 +22,7 @@ describe Gemnasium::GitlabService::Pusher do
   describe "#call" do
     it "pushes the dependency files" do
       expect(client).to receive(:upload_files).with(
-        'gemnasium-user/the-project', [
+        'gemnasium-user/the-project', '8c003bc9baa9d443dd2cf7fb8bc551439bb99295', [
           described_class::DependencyFile.new('Gemfile', "68609d16b77711fd079668539a07a648fe837c84", <<-EOS),
 source 'https://rubygems.org'
 gem 'jasmine'
