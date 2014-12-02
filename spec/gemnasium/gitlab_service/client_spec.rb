@@ -12,17 +12,6 @@ describe Gemnasium::GitlabService::Client do
     end
   end
 
-  describe 'compare_sha1s' do
-    before do
-      @files = [{"filename_1" => "sha1_1"},{"filename_2" => "sha1_2"}]
-      client.compare_sha1s('project_id', 'branch_id', @files)
-    end
-    it 'issues a POST request' do
-      expect(WebMock).to have_requested(:post, api_url("projects/project_id/branches/branch_id/dependency_files/compare"))
-        .with(:body => JSON.generate(@files), :headers => {'Accept'=>'application/json', 'Content-Type'=>'application/json'})
-    end
-  end
-
   describe 'upload_files' do
     before do
       @files = [

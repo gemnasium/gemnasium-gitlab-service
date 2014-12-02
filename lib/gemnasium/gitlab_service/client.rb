@@ -9,19 +9,6 @@ module Gemnasium
         @connection = Gemnasium::GitlabService::Connection.new(options)
       end
 
-      # Compares SHA1s with remote versions & returns the diff
-      #
-      # @params project [String] Identifier of the project
-      #         branch [String] Identifier of the branch
-      #         files [Hash] files to be uploaded. Eg:
-      #           {
-      #             "filename"  : "file_sha",
-      #             ...
-      #           }
-      def compare_sha1s(project, branch, sha1s)
-        request(:post, "projects/#{project}/branches/#{branch}/dependency_files/compare", sha1s)
-      end
-
       # Updates or creates the dependency files.
       #
       # @params project [String] Identifier of the project
@@ -39,7 +26,7 @@ module Gemnasium
         request(:post, "projects/#{project}/branches/#{branch}/dependency_files/upload", files)
       end
 
-    private
+      private
 
       # Issue a HTTP request
       #
