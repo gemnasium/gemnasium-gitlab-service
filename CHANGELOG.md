@@ -1,3 +1,7 @@
+# 0.2.4 / 2015-02-25
+
+* Bump vulnerable dependency rugged
+
 # 0.2.3 / 2014-12-02
 
 * Connect to new [Gemnasium API](https://api.gemnasium.com) v1
