@@ -14,12 +14,12 @@ module Gemnasium
       # @params project [String] Identifier of the project
       #         files [Hash] files to upload; a file respond to :path, :sha and :content
 
-      def upload_files(project, commit_sha, files)
+      def upload_files(files, project_slug:, branch_name:, commit_sha:)
         payload = files.map do |f|
           { "path" => f.path, "sha" => f.sha, "content" => Base64.encode64(f.content) }
         end
-        extra_headers = { 'X-Gms-Revision' => commit_sha }
-        request(:post, "projects/#{ project }/dependency_files", payload, extra_headers)
+        extra_headers = { 'X-Gms-Branch' => branch_name, 'X-Gms-Revision' => commit_sha }
+        request(:post, "projects/#{ project_slug }/dependency_files", payload, extra_headers)
       end
 
       private

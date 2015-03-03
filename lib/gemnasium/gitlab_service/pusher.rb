@@ -25,7 +25,10 @@ module Gemnasium
       #
       def call
         if dependency_files.any?
-          client.upload_files(project_slug, commit_sha, dependency_files)
+          client.upload_files(
+            dependency_files, project_slug: project_slug,
+            branch_name: branch_name, commit_sha: commit_sha
+          )
         end
       end
 

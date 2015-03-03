@@ -21,7 +21,10 @@ describe Gemnasium::GitlabService::Client do
     end
 
     before do
-      client.upload_files('project_slug', 'commit_sha', files)
+      client.upload_files(
+        files, project_slug: 'project_slug',
+        branch_name: 'branch_name', commit_sha: 'commit_sha'
+      )
     end
 
     it 'issues a POST request' do
@@ -39,8 +42,15 @@ describe Gemnasium::GitlabService::Client do
       ]
 
       expect(WebMock).to have_requested(:post, api_url("projects/project_slug/dependency_files")).
-        with(:body => expected_payload,
-             :headers => {'Accept'=>'application/json', 'Content-Type'=>'application/json', 'X-Gms-Revision'=> 'commit_sha'})
+        with(
+          :body => expected_payload,
+          :headers => {
+            'Accept'=>'application/json',
+            'Content-Type'=>'application/json',
+            'X-Gms-Branch'=> 'branch_name',
+            'X-Gms-Revision'=> 'commit_sha',
+          }
+      )
     end
   end
 

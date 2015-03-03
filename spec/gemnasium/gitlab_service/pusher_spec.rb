@@ -11,7 +11,7 @@ describe Gemnasium::GitlabService::Pusher do
     {
       repo: repo_path,
       after: commit_sha,
-      ref: 'refs/heads/master',
+      ref: 'refs/heads/dev',
       token: 'gemnasium-user/the-project',
       client: client
     }
@@ -107,10 +107,13 @@ DEPENDENCIES
       file_class = described_class::DependencyFile
 
       expect(client).to receive(:upload_files).with(
-        'gemnasium-user/the-project', commit_sha, [
+        [
           file_class.new('depfiles/Gemfile', "68609d16b77711fd079668539a07a648fe837c84", gemfile_content),
           file_class.new('depfiles/Gemfile.lock', "c6d0eedc76b94d6412a9ab9741a10782116c1c47", lockfile_content),
-        ]
+        ],
+        project_slug: 'gemnasium-user/the-project',
+        branch_name: 'dev',
+        commit_sha: commit_sha,
       )
       pusher.call
     end
