@@ -1,3 +1,7 @@
+# 0.2.5 / 2015-03-04
+
+* Push branch name to Gemnasium
+
 # 0.2.4 / 2015-02-25
 
 * Bump vulnerable dependency rugged
