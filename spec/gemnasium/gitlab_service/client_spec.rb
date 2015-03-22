@@ -22,8 +22,8 @@ describe Gemnasium::GitlabService::Client do
 
     before do
       client.upload_files(
-        files, project_slug: 'project_slug',
-        branch_name: 'branch_name', commit_sha: 'commit_sha'
+        files, 'project_slug',
+        'branch_name', 'commit_sha'
       )
     end
 
