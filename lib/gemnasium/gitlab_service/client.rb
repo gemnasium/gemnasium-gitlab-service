@@ -14,7 +14,7 @@ module Gemnasium
       # @params project [String] Identifier of the project
       #         files [Hash] files to upload; a file respond to :path, :sha and :content
 
-      def upload_files(files, project_slug:, branch_name:, commit_sha:)
+      def upload_files(files, project_slug, branch_name, commit_sha)
         payload = files.map do |f|
           { "path" => f.path, "sha" => f.sha, "content" => Base64.encode64(f.content) }
         end

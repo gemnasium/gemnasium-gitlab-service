@@ -111,9 +111,9 @@ DEPENDENCIES
           file_class.new('depfiles/Gemfile', "68609d16b77711fd079668539a07a648fe837c84", gemfile_content),
           file_class.new('depfiles/Gemfile.lock', "c6d0eedc76b94d6412a9ab9741a10782116c1c47", lockfile_content),
         ],
-        project_slug: 'gemnasium-user/the-project',
-        branch_name: 'dev',
-        commit_sha: commit_sha,
+        'gemnasium-user/the-project',
+        'dev',
+        commit_sha,
       )
       pusher.call
     end
