@@ -1,3 +1,7 @@
+# 0.2.6 / 2015-03-27
+
+* Fix compatible issue, make compatible with Ruby 2.0
+
 # 0.2.5 / 2015-03-04
 
 * Push branch name to Gemnasium
