@@ -1,5 +1,5 @@
 def api_url(path)
-  "https://X:secret_api_key@api.gemnasium.com/v1/#{path}"
+  "https://api.gemnasium.com/v1/#{path}"
 end
 
 def stub_requests
